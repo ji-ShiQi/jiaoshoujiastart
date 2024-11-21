@@ -9,7 +9,8 @@
     "build:test": "cross-env NODE_ENV=test webpack -c build/webpack.prod.ts",
     "build:prod": "cross-env NODE_ENV=production webpack -c build/webpack.prod.ts",
     "build:analy": "cross-env NODE_ENV=production BASE_ENV=production webpack -c build/webpack.analy.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint:lint-staged": "lint-staged"
   },
   "keywords": [],
   "author": "",
