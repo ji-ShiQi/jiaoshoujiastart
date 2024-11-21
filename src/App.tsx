@@ -7,6 +7,6 @@ const App: React.FC = () => {
     process.env.REACT_APP_ENV
   )
 
-  return <h2>你好， 蒙面大婶11</h2>
+  return <h2>你好， 1蒙面大婶11</h2>
 }
 export default App
