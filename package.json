@@ -68,5 +68,10 @@
   },
   "prettier": {
     "semi": false
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix -c ./eslint.config.js"
+    ]
   }
 }
