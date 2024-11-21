@@ -12,7 +12,9 @@ export default [
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   {
-    plugins: ['react'],
+    plugins: {
+      react: pluginReact
+    },
     rules: {
       'react/react-in-jsx-scope': 0
     }
