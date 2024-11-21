@@ -1,13 +1,11 @@
 import path from "path";
 import { merge } from "webpack-merge";
-import { Configuration } from "webpack";
+import { Configuration, HotModuleReplacementPlugin } from "webpack";
 import { Configuration as DevServerConfig } from "webpack-dev-server";
 import baseConfig from "./webpack.base";
 
 const host = "127.0.0.1";
 const port = "8082";
-
-console.log(process.env.NODE_ENV);
 
 const devServer: DevServerConfig = {
   host,
@@ -29,6 +27,7 @@ const devServer: DevServerConfig = {
 const devConfig: Configuration = merge(baseConfig, {
   mode: "development",
   devtool: "inline-source-map",
+  plugins: [new HotModuleReplacementPlugin()],
   devServer: devServer,
 });
 

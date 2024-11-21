@@ -1,17 +1,39 @@
-import { Configuration, DefinePlugin } from "webpack";
+import { Configuration } from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import WebpackBar from "webpackbar";
 const Dotenv = require("dotenv-webpack");
+import TerserPlugin from "terser-webpack-plugin";
 
-// const isDev = process.env.NODE_ENV === "development"; // 是否是开发模式
-// console.log("env:", process.env.NODE_ENV);
+const productionCacheGroups = {
+  react: {
+    test: /[\\/]node_modules[\\/](react|react-dom)/,
+    name: "react",
+    reuseExistingChunk: true,
+  },
+  antd: {
+    name: "antd",
+    test: /[\\/]node_modules[\\/](antd)/,
+    reuseExistingChunk: true,
+  },
+  common: {
+    name: "common",
+    test: /[\\/]src[\\/]/,
+    chunks: "all",
+    minChunks: 2,
+    priority: 20,
+    reuseExistingChunk: true,
+  },
+};
+
 const path = require("path");
+const isOnline = process.env.NODE_ENV === "production";
 const baseConfig: Configuration = {
   entry: path.resolve(__dirname, "../src/index.tsx"), // 入口文件
   // 打包出口文件
   output: {
     path: path.resolve(__dirname, "../dist"), // 打包结果输出路径
-    filename: "js/[name].[chunkhash:8].js", // 每个输出js的名称
+    filename: "[name].[contenthash:8].js", // 每个输出js的名称
+    chunkFilename: "[name].[contenthash:8].js",
     clean: true, // webpack4需要配置clean-webpack-pluin来删除dist文件，webpack5内置了
     publicPath: "/", //打包后文件的公共前缀路径
   },
@@ -78,6 +100,37 @@ const baseConfig: Configuration = {
   ],
   cache: {
     type: "filesystem", // 使用文件缓存
+  },
+  optimization: {
+    minimize: isOnline,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          compress: {
+            comparisons: false,
+          },
+        },
+      }),
+    ],
+    removeEmptyChunks: true,
+    providedExports: true,
+    usedExports: true,
+    sideEffects: true,
+    removeAvailableModules: true,
+    runtimeChunk: {
+      name: "runtime",
+    },
+    splitChunks: {
+      chunks: "all",
+      minSize: 1,
+      minChunks: 1,
+      maxInitialRequests: Number.MAX_SAFE_INTEGER,
+      maxAsyncRequests: Number.MAX_SAFE_INTEGER,
+      cacheGroups: isOnline
+        ? productionCacheGroups
+        : { default: false, vendors: false },
+    },
   },
 };
 
